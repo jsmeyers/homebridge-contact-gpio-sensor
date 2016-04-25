@@ -1,0 +1,19 @@
+{
+    "name": "homebridge-contact-gpio-sensor",
+    "version": "0.1",
+    "description": "Simulated switch plugin for Homebridge: https://github.com/nfarina/homebridge",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "homebridge-plugin",
+      "contact-sensor"
+    ],
+    "author": "lucabecker",
+    "license": "none",
+    "engines" : {
+        "node": ">=0.12.0",
+        "homebridge": ">=0.2.0"
+    }
+}
