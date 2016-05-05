@@ -48,7 +48,7 @@ function ContactGPIOSensor(log, config) {
 	});
 
 	process.on('SIGINT', function () {
-		this.contactSensor.unexport();
+		that.contactSensor.unexport();
 	});
 }
 
