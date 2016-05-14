@@ -1,22 +1,31 @@
 {
     "name": "homebridge-contact-gpio-sensor",
-    "version": "0.1",
-    "description": "Simulated switch plugin for Homebridge: https://github.com/nfarina/homebridge",
+    "version": "1.0.0",
+    "description": "Homebridge Plugin for doors and windows based on switches",
     "main": "index.js",
+    "devDependencies": {},
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lucavb/homebridge-contact-gpio-sensor.git"
     },
     "keywords": [
-      "homebridge-plugin",
-      "contact-sensor"
+        "homebridge",
+        "gpio",
+        "switches",
+        "door",
+        "window"
     ],
-    "author": "lucabecker",
-    "license": "none",
-    "engines" : {
-        "node": ">=0.12.0",
-        "homebridge": ">=0.2.0"
+    "author": "Luca Becker",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lucavb/homebridge-contact-gpio-sensor/issues"
     },
-    "dependencies" :
-      { "onoff" : "1.0.4"
-      }
+    "homepage": "https://github.com/lucavb/homebridge-contact-gpio-sensor#readme",
+    "dependencies" :{
+        "onoff" : "1.1.0",
+        "node-schedule" : "1.1.0"
+    }
 }
