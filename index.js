@@ -3,7 +3,6 @@ var Characteristic;
 var HomebridgeAPI;
 var Gpio = require('onoff').Gpio;
 var inherits = require('util').inherits;
-var schedule = require('node-schedule');
 
 var RETRY_COUNT = 10;
 
@@ -38,14 +37,6 @@ function ContactGPIOSensor(log, config) {
     this.contactSensor = new Gpio(this.pinId, 'in', 'both');
     this.openedCounter = 0;
 
-    this.lastOpenedTimestamp = (this.contactSensor.readSync() == 1) ? null : new Date();
-    this.msCounter = 0;
-
-
-    var j = schedule.scheduleJob({hour: 00, minute: 00}, function(){
-        that.msCounter = 0;
-    });
-
     EveTimesOpened = function () {
         Characteristic.call(this, 'Times Opened', 'E863F129-079E-48FF-8F27-9C2605A29F52');
         this.setProps({
@@ -60,22 +51,6 @@ function ContactGPIOSensor(log, config) {
 
     this.eve_characteristic_times_opened = EveTimesOpened;
 
-
-    MinutesOpened = function () {
-        Characteristic.call(this, 'Minutes Opened Today', '83D143BE-FC86-4D02-8F43-97E86080AE8C');
-        this.setProps({
-            format: Characteristic.Formats.UINT8,
-            unit : "min",
-            minValue: 0,
-            minStep: 1,
-            perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-        });
-        this.value = this.getDefaultValue();
-    };
-    inherits(MinutesOpened, Characteristic);
-
-    this.custom_characteristic_minutes_opened = MinutesOpened;
-
     //Eve service (custom UUID)
     EveDoorService = function (displayName, subtype) {
         Service.call(this, displayName, 'E863F003-079E-48FF-8F27-9C2605A29F52', subtype);
@@ -83,7 +58,6 @@ function ContactGPIOSensor(log, config) {
         this.addCharacteristic(Characteristic.CurrentDoorState);
         // Optional Characteristics
         this.addOptionalCharacteristic(EveTimesOpened);
-        this.addOptionalCharacteristic(MinutesOpened);
     };
     inherits(EveDoorService, Service);
 
@@ -99,11 +73,6 @@ function ContactGPIOSensor(log, config) {
     this.eve_service.getCharacteristic(EveTimesOpened)
         .on('get', this.getOpenedCounter.bind(this));
 
-    this.eve_service.getCharacteristic(MinutesOpened)
-        .on('get', this.getMinutesOpenedCounter.bind(this));
-
-
-
 
 
 
@@ -113,18 +82,6 @@ function ContactGPIOSensor(log, config) {
             .setValue(Math.floor(that.openedCounter/2));
         that.eve_service.getCharacteristic(Characteristic.CurrentDoorState)
             .setValue(translate(value));
-
-        var now = new Date();
-        if (value == 1) {
-            that.msCounter += (now - that.lastOpenedTimestamp);
-            that.lastOpenedTimestamp = null;
-        } else {
-            that.lastOpenedTimestamp = now;
-        }
-
-        // homebridge does not appear to appreciate the notification of custom characteristics
-        // that.eve_service.getCharacteristic(that.custom_characteristic_minutes_opened)
-        //     .setValue(Math.floor(this.msCounter/(1000 * 60)));
     });
 
     process.on('SIGINT', function () {
@@ -145,10 +102,6 @@ ContactGPIOSensor.prototype.getState = function(callback) {
 
 ContactGPIOSensor.prototype.getOpenedCounter = function(callback) {
     callback(null, Math.floor(this.openedCounter/2));
-};
-
-ContactGPIOSensor.prototype.getMinutesOpenedCounter = function(callback) {
-    callback(null, Math.floor(this.msCounter/(1000 * 60)));
 };
 
 ContactGPIOSensor.prototype.getServices = function() {
