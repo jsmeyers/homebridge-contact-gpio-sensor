@@ -49,6 +49,8 @@ function ContactGPIOSensor(log, config) {
     };
     inherits(EveTimesOpened, Characteristic);
 
+    EveTimesOpened.UUID = 'E863F129-079E-48FF-8F27-9C2605A29F52';
+
     this.eve_characteristic_times_opened = EveTimesOpened;
 
     //Eve service (custom UUID)
@@ -60,6 +62,8 @@ function ContactGPIOSensor(log, config) {
         this.addOptionalCharacteristic(EveTimesOpened);
     };
     inherits(EveDoorService, Service);
+
+    EveDoorService.UUID = 'E863F003-079E-48FF-8F27-9C2605A29F52';
 
 
 
